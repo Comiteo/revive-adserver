@@ -25,6 +25,8 @@
  * using the script located in the "scripts/delivery" directory.
  */
 
+$referer = rtrim($_SERVER['HTTP_REFERER'], '/');
+
 function parseDeliveryIniFile($configPath = null, $configFile = null, $sections = true)
 {
 if (!$configPath) {
@@ -3136,6 +3138,17 @@ $aGet[$conf['var']['dest']] = $desturl . '?' . $destparams;
 } else {
 parse_str($qs, $aGet);
 }
+
+    if(isset($aGet['oaparams']) && !preg_match("@^https?://@i",$dest)) {
+        $pattern = '/(.*)__oadest=(.*)/i';
+
+        $replacement = "$1__oadest=$referer$2";
+
+        $aGet['oaparams'] = preg_replace($pattern, $replacement, $aGet['oaparams']);
+
+        $dest = $referer.$dest;
+    }
+
 if ($dest !== false) {
 $aGet[$conf['var']['dest']] = $dest;
 }
