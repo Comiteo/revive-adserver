@@ -24,8 +24,13 @@
  * file(s) in the "delivery_dev" folder; and regenerate the delivery files
  * using the script located in the "scripts/delivery" directory.
  */
+function stripUrlPath($url) {
+    $urlParts = parse_url($url);
+    $newUrl = $urlParts['scheme'] . "://" . $urlParts['host'];
+    return $newUrl;
+}
 
-$referer = rtrim($_SERVER['HTTP_REFERER'], '/');
+$referer = stripUrlPath($_SERVER['HTTP_REFERER']);
 
 function parseDeliveryIniFile($configPath = null, $configFile = null, $sections = true)
 {
